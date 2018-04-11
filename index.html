@@ -1,0 +1,76 @@
+<html>
+    <head>
+
+    <script
+       src="https://code.jquery.com/jquery-3.3.1.min.js"
+       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+       crossorigin="anonymous">
+    </script>
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    </head>
+
+    <body>
+        <div class = "container">
+        <img src="https://media.tenor.com/images/c304005bebf94487e9a0c5b50539b1e4/tenor.gif" style="border-radius:100%"></img>
+        <h1>BOGO CRYPTO PORTFOLIO GENERATOR</h1>
+        Current Budget: <input class = "budget_thing" type = "text" name="budget">
+        <input class = "input_button" type = "submit">
+            <div class = "output"></div>
+        </div>
+    </body>
+
+
+    <script>
+        function viewifyArray(_array_of_assets){
+            master_frame_start = "<table class='table table-bordered'> <tr> <th>Name</th><th>Portfolio %</th><th>Cost</th> <th>Unit Purchase Amount</th> <th>Current Price (USD)</th></tr>"         
+            master_frame_end = "</table>"
+            console.log(_array_of_assets.length)
+ 
+            for (let i = 0; i < _array_of_assets.length; i++){
+                console.log(i)
+                asset_struct = _array_of_assets[i];
+                if(parseInt(asset_struct["proportion"]) < 1){
+                    continue;
+                } else {
+
+                html_frame_start = "<tr>"
+                html_frame_end = "</tr>"
+
+                html_frame_start += "<td><h3>" + asset_struct["name"] +"</h3></td>" +
+                                    "<td><p>" + asset_struct["proportion"] + "%</p></td>" +
+                                    "<td><p>" + asset_struct["amount_of_budget"] + "USD </p></td>" +
+                                    "<td><p>" + asset_struct["amount_to_buy"] + " " + String(asset_struct["symbol"]) + "</p></td>" +
+                                    "<td><p>" + asset_struct["price_usd"] + "</p></td>" +
+                                    html_frame_end
+
+               master_frame_start += html_frame_start
+            }}
+
+            return master_frame_start + master_frame_end
+ 
+
+        }
+ 
+        $(".input_button").on("click", function(){
+            $(".loader").show();
+
+            $.ajax({
+              url: "/getPortfolio",
+              data: {budget: $(".budget_thing").val()}
+            }).done(function(resp){
+                console.log(resp)
+                $(".output").html(viewifyArray(resp)) })
+                $(".loader").hide();
+        });
+
+    </script>
+
+</html>
